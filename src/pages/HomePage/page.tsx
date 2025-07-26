@@ -45,7 +45,7 @@ const Portfolio = () => {
 
   const form = useRef<HTMLFormElement>(null);
 
-  // Send email
+  // Send email - FIXED: Changed parameter type from MouseEvent to FormEvent
   const sendEmail = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!form.current) return;
@@ -1170,25 +1170,25 @@ const Portfolio = () => {
                           icon: Github,
                           href: "#",
                           label: "GitHub",
-                          color: "from-white-600 to-gray-800",
+                          color: "from-gray-600 to-gray-800",
                         },
                         {
                           icon: Mail,
                           href: "mailto:pj.bonbon@example.com",
                           label: "Email",
-                          color: "from-white-500 to-pink-600",
+                          color: "from-red-500 to-pink-600",
                         },
                         {
                           icon: Phone,
                           href: "tel:+63123456789",
                           label: "Phone",
-                          color: "from-white-500 to-green-600",
+                          color: "from-blue-500 to-green-600",
                         },
                       ].map((social, index) => (
                         <a
                           key={index}
                           href={social.href}
-                          className={`w-12 h-12 bg-gradient-to-r rounded-xl flex items-center justify-center text-white hover:scale-110 transition-all duration-300 shadow-lg hover:shadow-xl`}
+                          className={`w-12 h-12 bg-gradient-to-r ${social.color} rounded-xl flex items-center justify-center text-white hover:scale-110 transition-all duration-300 shadow-lg hover:shadow-xl`}
                           title={social.label}
                         >
                           <social.icon className="w-5 h-5" />
@@ -1248,21 +1248,19 @@ const Portfolio = () => {
                         name="subject"
                         className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700/50 dark:text-white transition-all duration-300 backdrop-blur-sm"
                       >
-                        <option value={"Web Application"}>
+                        <option value="Web Application">
                           Web Application
                         </option>
-                        <option value={"E-Commerece Platform"}>
+                        <option value="E-Commerce Platform">
                           E-Commerce Platform
                         </option>
-                        <option value={"Management System"}>
+                        <option value="Management System">
                           Management System
                         </option>
-                        <option value={"API Development"}>
+                        <option value="API Development">
                           API Development
                         </option>
-                        <option
-                          value={"Subject for this message is other matter"}
-                        >
+                        <option value="Other matter">
                           Other matter
                         </option>
                       </select>
@@ -1361,6 +1359,7 @@ const Portfolio = () => {
         </div>
       </footer>
 
+      {/* FIXED: Added null check to prevent TypeScript error */}
       {selectedProject && (
         <ProjectModal
           project={selectedProject}
