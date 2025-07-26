@@ -46,7 +46,7 @@ const Portfolio = () => {
   const form = useRef<HTMLFormElement>(null);
 
   // Send email
-  const sendEmail = (e: React.FormEvent<HTMLFormElement>) => {
+  const sendEmail = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
 
     if (!form.current) return;
@@ -70,8 +70,20 @@ const Portfolio = () => {
       );
   };
 
+  type Project = {
+    id: number;
+    title: string;
+    description: string;
+    techStack: string[];
+    demoUrl: string;
+    repoUrl: string;
+    image: string;
+    status: string;
+    category: string;
+    };
+
   // Sample data
-  const projects = [
+  const projects: Project[] = [
     {
       id: 1,
       title: "CTU Argao Boarding House Locator",
@@ -209,7 +221,7 @@ const Portfolio = () => {
     return () => observer.disconnect();
   }, [isLoading]);
 
-  // Loading Component
+  // Loading Component  
 //   if (isLoading) {
 //     return (
 //       <div className="fixed inset-0 bg-gradient-to-br flex items-center justify-center z-5">
@@ -228,7 +240,7 @@ const Portfolio = () => {
 //     );
 //   }
 
-  const scrollToSection = (sectionId) => {
+  const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
@@ -237,7 +249,13 @@ const Portfolio = () => {
     }
   };
 
-  const ProjectModal = ({ project, isOpen, onClose }) => {
+  type ProjectModalProps = {
+    project: Project;
+    isOpen: boolean;
+    onClose: () => void;
+    };
+
+  const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
     if (!isOpen) return null;
 
     return (
@@ -281,7 +299,7 @@ const Portfolio = () => {
                 Technologies Used
               </h4>
               <div className="flex flex-wrap gap-3">
-                {project.techStack.map((tech, index) => (
+                {project.techStack.map((tech: string, index: number) => (
                   <span
                     key={index}
                     className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full text-sm font-medium"
@@ -318,7 +336,7 @@ const Portfolio = () => {
     );
   };
 
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   return (
     <div className={`min-h-screen transition-all duration-500 ${darkMode ? "dark" : ""}`}>
