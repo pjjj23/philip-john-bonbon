@@ -191,7 +191,7 @@ const Portfolio = () => {
 
   // Mouse tracking for parallax effect
   useEffect(() => {
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({
         x: (e.clientX / window.innerWidth) * 100,
         y: (e.clientY / window.innerHeight) * 100,
@@ -1031,6 +1031,7 @@ const Portfolio = () => {
                   </div>
 
                   <button
+                    onClick={sendEmail}
                     type="submit"
                     className="w-full px-6 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:shadow-xl focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 font-medium transform hover:scale-105"
                   >
