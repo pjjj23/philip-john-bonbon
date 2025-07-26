@@ -43,9 +43,9 @@ const Portfolio = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  const form = useRef();
+  const form = useRef<HTMLFormElement>(null);
   // Send email
-  const sendEmail = (e) => {
+  const sendEmail = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     emailjs.sendForm("service_630nyb9", "template_v1nuzjs", form.current, "_nC3mpObsQcam4caA").then(
