@@ -43,6 +43,10 @@ const Portfolio = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
+  useEffect(()=>{
+    document.title="My Portfolio | Philip John Bonbon"
+  }, [])
+  
   const form = useRef<HTMLFormElement>(null);
   // Send email
   const sendEmail = (e: React.MouseEvent<HTMLButtonElement>) => {
