@@ -44,20 +44,31 @@ const Portfolio = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   const form = useRef<HTMLFormElement>(null);
+
   // Send email
-  const sendEmail = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const sendEmail = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    emailjs.sendForm("service_630nyb9", "template_v1nuzjs", form.current, "_nC3mpObsQcam4caA").then(
-        ()=>{
-            alert("Message sent successfully!");
-            form.current.reset();
+    if (!form.current) return;
+
+    emailjs
+      .sendForm(
+        "service_630nyb9",
+        "template_v1nuzjs",
+        form.current,
+        "_nC3mpObsQcam4caA"
+      )
+      .then(
+        () => {
+          alert("Message sent successfully!");
+          form.current?.reset();
         },
         (error) => {
-            alert("Failed to send message, please try again.", error.text);
+          alert("Failed to send message. Please try again.");
+          console.error("EmailJS Error:", error.text);
         }
-    )
-  }
+      );
+  };
 
   // Sample data
   const projects = [
