@@ -49,16 +49,21 @@ const Portfolio = () => {
 
   const form = useRef<HTMLFormElement>(null);
   // Send email
-  const sendEmail = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const sendEmail = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!form.current) return;
 
     emailjs.sendForm("service_630nyb9", "template_v1nuzjs", form.current, "_nC3mpObsQcam4caA").then(
         ()=>{
             alert("Message sent successfully!");
-            form.current.reset(); 
+            if (form.current) {
+              form.current.reset(); 
+            }
         },
         (error) => {
-            alert("Failed to send message, please try again.", error.text);
+            alert("Failed to send message, please try again.");
+            console.error(error);
         }
     )
   }
@@ -172,7 +177,7 @@ const Portfolio = () => {
 
   // Mouse tracking for parallax effect
   useEffect(() => {
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({
         x: (e.clientX / window.innerWidth) * 100,
         y: (e.clientY / window.innerHeight) * 100,
@@ -221,7 +226,7 @@ const Portfolio = () => {
 //     );
 //   }
 
-  const scrollToSection = (sectionId) => {
+  const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
@@ -230,7 +235,11 @@ const Portfolio = () => {
     }
   };
 
-  const ProjectModal = ({ project, isOpen, onClose }) => {
+  const ProjectModal = ({ project, isOpen, onClose }: {
+    project: any;
+    isOpen: boolean;
+    onClose: () => void;
+  }) => {
     if (!isOpen) return null;
 
     return (
@@ -274,7 +283,7 @@ const Portfolio = () => {
                 Technologies Used
               </h4>
               <div className="flex flex-wrap gap-3">
-                {project.techStack.map((tech, index) => (
+                {project.techStack.map((tech: string, index: number) => (
                   <span
                     key={index}
                     className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full text-sm font-medium"
@@ -311,7 +320,7 @@ const Portfolio = () => {
     );
   };
 
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [selectedProject, setSelectedProject] = useState<any>(null);
 
   return (
     <div className={`min-h-screen transition-all duration-500 ${darkMode ? "dark" : ""}`}>
@@ -727,7 +736,7 @@ const Portfolio = () => {
                       {project.description}
                     </p>
                     <div className="flex flex-wrap gap-2 mb-4">
-                      {project.techStack.slice(0, 3).map((tech, techIndex) => (
+                      {project.techStack.slice(0, 3).map((tech: string, techIndex: number) => (
                         <span
                           key={techIndex}
                           className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs rounded-full"
