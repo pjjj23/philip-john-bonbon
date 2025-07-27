@@ -54,15 +54,29 @@ const Portfolio = () => {
 
     if (!form.current) return;
 
+    setIsSubmitting(true);
+
     emailjs.sendForm("service_630nyb9", "template_v1nuzjs", form.current, "_nC3mpObsQcam4caA").then(
         ()=>{
-            alert("Message sent successfully!");
+            setModalMessage({
+              type: 'success',
+              title: 'Message Sent Successfully!',
+              message: 'Thank you for reaching out. I will get back to you as soon as possible.'
+            });
+            setShowModal(true);
+            setIsSubmitting(false);
             if (form.current) {
               form.current.reset(); 
             }
         },
         (error) => {
-            alert("Failed to send message, please try again.");
+            setModalMessage({
+              type: 'error',
+              title: 'Failed to Send Message',
+              message: 'Something went wrong. Please try again or contact me directly via email.'
+            });
+            setShowModal(true);
+            setIsSubmitting(false);
             console.error(error);
         }
     )
@@ -235,6 +249,64 @@ const Portfolio = () => {
     }
   };
 
+  const MessageModal = ({ isOpen, onClose, type, title, message }: {
+    isOpen: boolean;
+    onClose: () => void;
+    type: string;
+    title: string;
+    message: string;
+  }) => {
+    if (!isOpen) return null;
+
+    return (
+      <div 
+        className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            onClose();
+          }
+        }}
+      >
+        <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full shadow-2xl border border-white/20 dark:border-gray-700/20">
+          <div className="p-8 text-center">
+            <div className="mb-6">
+              {type === 'success' ? (
+                <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </div>
+              ) : (
+                <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </div>
+              )}
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                {title}
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                {message}
+              </p>
+            </div>
+            
+            <button
+              onClick={onClose}
+              className={`w-full px-6 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 ${
+                type === 'success'
+                  ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:shadow-lg'
+                  : 'bg-gradient-to-r from-red-500 to-rose-500 text-white hover:shadow-lg'
+              }`}
+            >
+              Got it!
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const ProjectModal = ({ project, isOpen, onClose }: {
     project: any;
     isOpen: boolean;
@@ -321,6 +393,9 @@ const Portfolio = () => {
   };
 
   const [selectedProject, setSelectedProject] = useState<any>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState({ type: '', title: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
     <div className={`min-h-screen transition-all duration-500 ${darkMode ? "dark" : ""}`}>
@@ -1016,9 +1091,23 @@ const Portfolio = () => {
 
                   <button
                     type="submit"
-                    className="w-full px-6 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:shadow-xl focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 font-medium transform hover:scale-105"
+                    disabled={isSubmitting}
+                    className={`w-full px-6 py-4 rounded-xl focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 font-medium flex items-center justify-center gap-2 ${
+                      isSubmitting 
+                        ? 'bg-gray-400 cursor-not-allowed' 
+                        : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-xl transform hover:scale-105'
+                    }`}
                   >
-                    Send Message
+                    {isSubmitting ? (
+                      <>
+                        <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        Sending...
+                      </>
+                    ) : (
+                      'Send Message'
+                    )}
                   </button>
                 </form>
               </div>
@@ -1088,6 +1177,15 @@ const Portfolio = () => {
           </div>
         </div>
       </footer>
+
+      {/* Message Modal */}
+      <MessageModal 
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        type={modalMessage.type}
+        title={modalMessage.title}
+        message={modalMessage.message}
+      />
 
       {/* Project Modal */}
       <ProjectModal 
