@@ -18,6 +18,8 @@ import {
   X,
   ArrowRight,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Star,
   Award, 
   Atom,
@@ -91,7 +93,12 @@ const Portfolio = () => {
       techStack: ["Django", "React", "PostgreSQL", "Google Maps API", "Stripe"],
       demoUrl: "https://demo.example.com",
       repoUrl: "https://github.com/username/project1",
-      image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=500&h=300&fit=crop",
+      images: [
+        "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop"
+      ],
       status: "Live Project",
       category: "Web Application"
     },
@@ -102,7 +109,11 @@ const Portfolio = () => {
       techStack: ["PHP", "MySQL", "JavaScript", "Bootstrap", "PayPal API"],
       demoUrl: "https://demo2.example.com",
       repoUrl: "https://github.com/username/project2",
-      image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=500&h=300&fit=crop",
+      images: [
+        "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=800&h=600&fit=crop"
+      ],
       status: "In Development",
       category: "E-Commerce"
     },
@@ -113,7 +124,11 @@ const Portfolio = () => {
       techStack: ["Django", "HTML5", "CSS3", "JavaScript", "SQLite"],
       demoUrl: "https://demo3.example.com",
       repoUrl: "https://github.com/username/project3",
-      image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=500&h=300&fit=crop",
+      images: [
+        "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&h=600&fit=crop"
+      ],
       status: "Completed",
       category: "Education"
     },
@@ -312,20 +327,101 @@ const Portfolio = () => {
     isOpen: boolean;
     onClose: () => void;
   }) => {
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    
+    // Reset image index when modal opens or project changes
+    useEffect(() => {
+      if (isOpen) {
+        setCurrentImageIndex(0);
+      }
+    }, [isOpen, project?.id]);
+
+    // Keyboard navigation
+    useEffect(() => {
+      if (!isOpen) return;
+      
+      const handleKeyPress = (e: KeyboardEvent) => {
+        if (e.key === 'ArrowLeft') {
+          prevImage();
+        } else if (e.key === 'ArrowRight') {
+          nextImage();
+        } else if (e.key === 'Escape') {
+          onClose();
+        }
+      };
+
+      window.addEventListener('keydown', handleKeyPress);
+      return () => window.removeEventListener('keydown', handleKeyPress);
+    }, [isOpen, currentImageIndex]);
+    
     if (!isOpen) return null;
+
+    const nextImage = () => {
+      setCurrentImageIndex((prev) => (prev + 1) % project.images.length);
+    };
+
+    const prevImage = () => {
+      setCurrentImageIndex((prev) => (prev - 1 + project.images.length) % project.images.length);
+    };
 
     return (
       <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
           <div className="relative">
-            <img
-              src={project.image}
-              alt={project.title}
-              className="w-full h-64 object-cover rounded-t-2xl"
-            />
+            {/* Image Carousel */}
+            <div className="relative h-64 overflow-hidden rounded-t-2xl">
+              <img
+                src={project.images[currentImageIndex]}
+                alt={`${project.title} - Image ${currentImageIndex + 1}`}
+                className="w-full h-full object-cover transition-transform duration-300"
+              />
+              
+              {/* Navigation Arrows */}
+              {project.images.length > 1 && (
+                <>
+                  <button
+                    onClick={prevImage}
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={nextImage}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </>
+              )}
+              
+              {/* Image Indicators */}
+              {project.images.length > 1 && (
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                  {project.images.map((_: any, index: number) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImageIndex(index)}
+                      className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                        index === currentImageIndex
+                          ? 'bg-white scale-125'
+                          : 'bg-white/50 hover:bg-white/75'
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
+              
+              {/* Image Counter */}
+              {project.images.length > 1 && (
+                <div className="absolute top-4 left-4 px-3 py-1 bg-black/50 text-white text-sm rounded-full">
+                  {currentImageIndex + 1} / {project.images.length}
+                </div>
+              )}
+            </div>
+            
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 w-10 h-10 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center text-white transition-colors"
+              className="absolute top-4 right-4 w-10 h-10 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center text-white transition-colors z-10"
             >
               <X className="w-5 h-5" />
             </button>
@@ -365,6 +461,43 @@ const Portfolio = () => {
                 ))}
               </div>
             </div>
+            
+            {/* Image Thumbnails */}
+            {project.images.length > 1 && (
+              <div className="mb-8">
+                <h4 className="font-semibold text-xl mb-4 text-gray-900 dark:text-white">
+                  Project Gallery
+                </h4>
+                <div className="grid grid-cols-4 gap-3">
+                  {project.images.map((image: string, index: number) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImageIndex(index)}
+                      className={`relative aspect-video rounded-lg overflow-hidden transition-all duration-300 ${
+                        index === currentImageIndex
+                          ? 'ring-2 ring-blue-500 scale-105'
+                          : 'hover:scale-105 hover:ring-2 hover:ring-gray-300'
+                      }`}
+                    >
+                      <img
+                        src={image}
+                        alt={`${project.title} - Thumbnail ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                      {index === currentImageIndex && (
+                        <div className="absolute inset-0 bg-blue-500/20 flex items-center justify-center">
+                          <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+                            <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          </div>
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             
             <div className="flex gap-4">
               <a
@@ -781,7 +914,7 @@ const Portfolio = () => {
                 <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 group-hover:scale-105 border border-white/20 dark:border-gray-700/20">
                   <div className="relative overflow-hidden">
                     <img
-                      src={project.image}
+                      src={project.images[0]}
                       alt={project.title}
                       className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
                     />
