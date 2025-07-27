@@ -474,12 +474,7 @@ const Portfolio = () => {
   //       </div>
   //     );
   //   }
-
-  <link
-    rel="icon"
-    type="image/png"
-    href="images/philip-john-bonbon/pj-logo.png"
-  />
+ 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
