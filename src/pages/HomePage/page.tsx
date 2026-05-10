@@ -7,7 +7,7 @@ import {
   faStar, faChartBar, faMapMarkerAlt, faTrophy, faLaptopCode, faBriefcase,
   faCloudSun, faPaw, faBell, faBuilding, faSearch, faArrowLeft, faArrowRight,
   faTimes, faInfoCircle, faLock, faVolumeUp, faWifi, faBatteryFull,
-  faNavicon, faFolder, faMusic, faVideo, faFileArchive, faCog, faUser, 
+  faNavicon, faFolder, faMusic, faVideo, faFileArchive, faCog, faUser,
   faLink, faCode, faExternalLinkAlt, faTimesCircle, faChevronLeft, faChevronRight
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub, faWindows } from "@fortawesome/free-brands-svg-icons";
@@ -25,6 +25,7 @@ const userInfo = {
   experience: "5+ Years",
   projects: "10+ Completed",
   bio: "Full-stack developer with applied experience in Python/Django, React, and Firebase. Delivered production-level systems during internship and freelance engagements. Proficient in schema design, API integration, and interface implementation.",
+  profileImage: "images/philip-john-bonbon.jpg"
 };
 
 const projectsData = [
@@ -275,16 +276,58 @@ const skills = {
 };
 
 const desktopIcons = [
-  { id: "user", name: "This User", icon: faUserCircle, type: "user" },
-  { id: "projects", name: "Projects", icon: faFolderOpen, type: "projects" },
-  { id: "experience", name: "Experience", icon: faChartLine, type: "experience" },
-  { id: "skills", name: "Skills.txt", icon: faFileAlt, type: "skills" },
-  { id: "cmd", name: "Terminal", icon: faTerminal, type: "cmd" },
-  { id: "resume", name: "Resume.pdf", icon: faFilePdf, type: "resume" },
-  { id: "recycle", name: "Recycle Bin", icon: faTrashAlt, type: "recycle" },
-  { id: "filemanager", name: "File Manager", icon: faFolderTree, type: "filemanager" },
-  { id: "camera", name: "Camera", icon: faCamera, type: "camera" },
-];
+  { id: "user", name: "This User", icon: faUserCircle, type: "user", style: {color: "#4656bc"} },
+  { id: "projects", name: "Projects", icon: faFolderOpen, type: "projects", style: {color: "#d1bd0d"} },
+  { id: "experience", name: "Experience", icon: faChartLine, type: "experience", style: {color: "#46bc5e"} },
+  { id: "skills", name: "Skills.txt", icon: faFileAlt, type: "skills", style: {color: "#3fa6bb"} },
+  { id: "cmd", name: "Terminal", icon: faTerminal, type: "cmd", style: {color: "#2b2a2a"} },
+  { id: "resume", name: "Resume.pdf", icon: faFilePdf, type: "resume", style: {color: "#d10d0d"} },
+  { id: "recycle", name: "Recycle Bin", icon: faTrashAlt, type: "recycle", style: {color: "#4656bc"} },
+  { id: "filemanager", name: "File Manager", icon: faFolderTree, type: "filemanager", style: {color: "#d1bd0d"} },
+  { id: "camera", name: "Camera", icon: faCamera, type: "camera", style: {color: "#110366"} },
+];  
+
+// Image Viewer Modal for File Manager
+function ImageViewer({ imagePath, onClose }) {
+  return (
+    <div style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      background: "rgba(0,0,0,0.9)",
+      zIndex: 10001,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      cursor: "pointer"
+    }} onClick={onClose}>
+      <img 
+        src={imagePath} 
+        alt="Full size" 
+        style={{ maxWidth: "90%", maxHeight: "90%", objectFit: "contain" }}
+        onClick={(e) => e.stopPropagation()}
+        onError={(e) => { e.target.src = "https://via.placeholder.com/800x600?text=Image+Not+Found"; }}
+      />
+      <button onClick={onClose} style={{
+        position: "absolute",
+        top: 20,
+        right: 20,
+        background: "rgba(0,0,0,0.5)",
+        border: "none",
+        borderRadius: "50%",
+        width: 40,
+        height: 40,
+        cursor: "pointer",
+        color: "#fff",
+        fontSize: 20
+      }}>
+        <FontAwesomeIcon icon={faTimesCircle} />
+      </button>
+    </div>
+  );
+}
 
 // Project Detail Modal Component
 function ProjectDetail({ project, onClose }) {
@@ -551,6 +594,7 @@ function ExperienceDetail({ experience, onClose }) {
 function FileManagerWindow({ onNotify }) {
   const [currentPath, setCurrentPath] = useState("This PC");
   const [selectedItem, setSelectedItem] = useState(null);
+  const [viewerImage, setViewerImage] = useState(null);
 
   const sidebarItems = [
     { name: "This PC", icon: faDesktop, path: "This PC" },
@@ -559,10 +603,22 @@ function FileManagerWindow({ onNotify }) {
     { name: "Pictures", icon: faImage, path: "Pictures" },
   ];
 
-  const personalPhotos = [
-    { name: "PJ Profile", file: "pj.jpg", type: "image", icon: faImage },
-    { name: "PJ Photo 2", file: "pj32.jpg", type: "image", icon: faImage },
-    { name: "PJ Photo 3", file: "pj-2.jpg", type: "image", icon: faImage },
+  const personalPhotos = [ 
+    { name: "PJ Photo 1", file: "pj1.jpg", type: "image" },
+    { name: "PJ Photo 2", file: "pj2.jpg", type: "image" },
+    { name: "PJ Photo 3", file: "pj3.jpg", type: "image" },
+    { name: "PJ Photo 4", file: "pj4.jpg", type: "image" },
+    { name: "PJ Photo 5", file: "pj5.jpg", type: "image" },
+    { name: "PJ Photo 6", file: "pj6.jpg", type: "image" },
+    { name: "PJ Photo 7", file: "pj7.jpg", type: "image" },
+    { name: "PJ Photo 8", file: "pj8.jpg", type: "image" },
+    { name: "PJ Photo 9", file: "pj9.jpg", type: "image" },
+    { name: "PJ Photo 10", file: "pj10.jpg", type: "image" },
+    { name: "PJ Photo 11", file: "pj11.jpg", type: "image" },
+    { name: "PJ Photo 12", file: "pj12.jpg", type: "image" },
+    { name: "PJ Photo 13", file: "pj13.jpg", type: "image" },
+    { name: "PJ Photo 14", file: "pj14.jpeg", type: "image" },
+    { name: "PJ Photo 15", file: "pj15.jpg", type: "image" }
   ];
 
   const getItemsForPath = () => {
@@ -588,8 +644,7 @@ function FileManagerWindow({ onNotify }) {
       "Pictures": personalPhotos.map(photo => ({
         name: photo.name,
         type: "image",
-        icon: faImage,
-        imagePath: `images/myself/${photo.file}`
+        imagePath: `images/gallery/${photo.file}`
       }))
     };
     return files[currentPath] || files["This PC"];
@@ -605,8 +660,7 @@ function FileManagerWindow({ onNotify }) {
       else if (item.name === "Documents") onNotify?.("Opening Documents folder");
       else setCurrentPath(item.name);
     } else if (item.type === "image" && item.imagePath) {
-      window.open(item.imagePath, "_blank");
-      onNotify?.(`Opening ${item.name}`);
+      setViewerImage(item.imagePath);
     } else {
       onNotify?.(`Opening ${item.name}`);
     }
@@ -614,6 +668,8 @@ function FileManagerWindow({ onNotify }) {
 
   return (
     <div style={{ display: "flex", height: "100%", background: "#fff", fontFamily: "'Segoe UI', sans-serif" }}>
+      {viewerImage && <ImageViewer imagePath={viewerImage} onClose={() => setViewerImage(null)} />}
+      
       <div style={{ width: 220, background: "#f8f8f8", borderRight: "1px solid #ddd", padding: "12px 8px" }}>
         <div style={{ marginBottom: 20 }}>
           <div style={{ fontWeight: 600, fontSize: 12, color: "#6e6e6e", marginBottom: 10, paddingLeft: 8 }}>
@@ -663,19 +719,33 @@ function FileManagerWindow({ onNotify }) {
             <span>{currentPath}</span>
           </div>
         </div>
-        <div style={{ padding: 20, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))", gap: 16, overflowY: "auto", flex: 1 }}>
+        <div style={{ padding: 20, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))", gap: 16, overflowY: "auto", flex: 1 }}>
           {items.map((item, idx) => (
             <div
               key={idx}
               style={{
                 display: "flex", flexDirection: "column", alignItems: "center", padding: "12px 8px",
-                borderRadius: 8, cursor: "pointer", transition: "background 0.1s",
+                borderRadius: 8, cursor: "pointer", transition: "background 0.1s, transform 0.1s",
                 background: selectedItem === item.name ? "#e5f3ff" : "transparent"
               }}
               onClick={() => setSelectedItem(item.name)}
               onDoubleClick={() => openItem(item)}
             >
-              <FontAwesomeIcon icon={item.icon} style={{ fontSize: 36, color: item.type === "folder" ? "#F2C94C" : "#7f8c8d", marginBottom: 8 }} />
+              {item.type === "image" && item.imagePath ? (
+                <>
+                  <img 
+                    src={item.imagePath} 
+                    alt={item.name}
+                    style={{ width: 80, height: 80, objectFit: "cover", borderRadius: 8, marginBottom: 8 }}
+                    onError={(e) => { e.target.style.display = "none"; e.target.nextSibling.style.display = "flex"; }}
+                  />
+                  <div style={{ display: "none" }}>
+                    <FontAwesomeIcon icon={faImage} style={{ fontSize: 36, color: "#7f8c8d", marginBottom: 8 }} />
+                  </div>
+                </>
+              ) : (
+                <FontAwesomeIcon icon={item.icon} style={{ fontSize: 36, color: item.type === "folder" ? "#F2C94C" : "#7f8c8d", marginBottom: 8 }} />
+              )}
               <span style={{ fontSize: 12, textAlign: "center", wordBreak: "break-word" }}>{item.name}</span>
             </div>
           ))}
@@ -736,7 +806,7 @@ function CameraWindow({ onNotify }) {
     <div style={{ background: "#111", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 20 }}>
       {!hasCamera ? (
         <div style={{ textAlign: "center", color: "#fff" }}>
-          <FontAwesomeIcon icon={faCameraSlash} style={{ fontSize: 48, marginBottom: 16, opacity: 0.6 }} />
+          <FontAwesomeIcon icon={faCamera} style={{ fontSize: 48, marginBottom: 16, opacity: 0.6 }} />
           <p>Camera not available. Please allow camera permissions.</p>
         </div>
       ) : (
@@ -810,7 +880,16 @@ function WindowContent({ type, onNotify, setSelectedProject, setSelectedExperien
   if (type === "user") return (
     <div style={{ padding: 24 }}>
       <div style={{ display: "flex", gap: 20, alignItems: "center", marginBottom: 20, paddingBottom: 20, borderBottom: "1px solid #e0e0e0" }}>
-        <div style={{ width: 80, height: 80, borderRadius: "50%", background: "linear-gradient(135deg,#0078D4,#8764B8)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 28, fontWeight: 700, flexShrink: 0 }}>PJ</div>
+        <img 
+          src={userInfo.profileImage} 
+          alt={userInfo.name}
+          style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover" }}
+          onError={(e) => { 
+            e.target.style.display = "none";
+            e.target.nextSibling.style.display = "flex";
+          }}
+        />
+        <div style={{ width: 80, height: 80, borderRadius: "50%", background: "linear-gradient(135deg,#0078D4,#8764B8)", display: "none", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 28, fontWeight: 700, flexShrink: 0 }}>PJ</div>
         <div>
           <div style={{ fontSize: 22, fontWeight: 700, color: "#1a1a1a" }}>{userInfo.name}</div>
           <div style={{ color: "#0078D4", fontSize: 14, fontWeight: 500 }}>{userInfo.role}</div>
@@ -1072,7 +1151,7 @@ export default function App() {
       <div style={{ position: "fixed", top: 20, left: 20, display: "grid", gridTemplateColumns: "repeat(3, 100px)", gap: "32px 48px", zIndex: 5 }} onClick={(e) => e.stopPropagation()}>
         {desktopIcons.map((icon) => (
           <div key={icon.id} style={{ display: "flex", flexDirection: "column", alignItems: "center", width: 90, cursor: "pointer", padding: "8px 4px", borderRadius: 8, transition: "background .15s", background: "transparent" }} onDoubleClick={() => openWindow(icon.type)} onClick={(e) => e.stopPropagation()}>
-            <FontAwesomeIcon icon={icon.icon} style={{ fontSize: 32, color: "#fff", filter: "drop-shadow(0 2px 5px rgba(0,0,0,0.6))", marginBottom: 8 }} />
+            <FontAwesomeIcon icon={icon.icon} style={{ fontSize: 32, color: icon.style?.color || "#fff", filter: "drop-shadow(0 2px 5px rgba(0,0,0,0.6))", marginBottom: 8 }} />
             <span style={{ color: "#fff", fontSize: 12, textShadow: "0 1px 3px rgba(0,0,0,.8)", fontWeight: 500, textAlign: "center" }}>{icon.name}</span>
           </div>
         ))}
@@ -1087,24 +1166,24 @@ export default function App() {
 
       {startMenu && (<div style={{ position: "fixed", bottom: 52, left: 12, width: 480, background: "rgba(35,35,45,.96)", backdropFilter: "blur(24px)", borderRadius: 12, boxShadow: "0 24px 64px rgba(0,0,0,.6)", zIndex: 200, border: "1px solid rgba(255,255,255,.12)", overflow: "hidden" }} onClick={(e) => e.stopPropagation()}>
         <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid rgba(255,255,255,.08)" }}><div style={{ display: "flex", alignItems: "center", gap: 14 }}><FontAwesomeIcon icon={faUserCircle} style={{ fontSize: 44, color: "#0078D4" }} /><div><div style={{ color: "#fff", fontWeight: 600, fontSize: 14 }}>{userInfo.name}</div><div style={{ color: "rgba(255,255,255,.5)", fontSize: 12 }}>{userInfo.role}</div></div></div></div>
-        <div style={{ padding: "16px 24px" }}><div style={{ color: "rgba(255,255,255,.5)", fontSize: 12, marginBottom: 10 }}>PINNED</div><div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8 }}>{desktopIcons.map((icon) => (<div key={icon.id} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, padding: "10px 8px", borderRadius: 8, cursor: "pointer", transition: "background .15s" }} onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,.1)"} onMouseLeave={(e) => e.currentTarget.style.background = "transparent"} onClick={() => openWindow(icon.type)}><FontAwesomeIcon icon={icon.icon} style={{ fontSize: 24, color: "#fff" }} /><span style={{ color: "rgba(255,255,255,.85)", fontSize: 11, textAlign: "center" }}>{icon.name}</span></div>))}</div></div>
+        <div style={{ padding: "16px 24px" }}><div style={{ color: "rgba(255,255,255,.5)", fontSize: 12, marginBottom: 10 }}>PINNED</div><div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8 }}>{desktopIcons.map((icon) => (<div key={icon.id} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, padding: "10px 8px", borderRadius: 8, cursor: "pointer", transition: "background .15s" }} onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,.1)"} onMouseLeave={(e) => e.currentTarget.style.background = "transparent"} onClick={() => openWindow(icon.type)}><FontAwesomeIcon icon={icon.icon} style={{ fontSize: 24, color: icon.style?.color || "#fff" }} /><span style={{ color: "rgba(255,255,255,.85)", fontSize: 11, textAlign: "center" }}>{icon.name}</span></div>))}</div></div>
         <div style={{ padding: "12px 24px 16px", borderTop: "1px solid rgba(255,255,255,.08)", display: "flex", justifyContent: "flex-end" }}><button style={{ background: "rgba(255,255,255,.08)", border: "none", color: "rgba(255,255,255,.7)", padding: "6px 14px", borderRadius: 6, cursor: "pointer", fontSize: 12, display: "flex", alignItems: "center", gap: 6 }} onClick={() => setPhase("lock")}><FontAwesomeIcon icon={faLock} /> Lock</button></div>
       </div>)}
 
       {searchOpen && (<div style={{ position: "fixed", bottom: 52, left: "50%", transform: "translateX(-50%)", width: 480, background: "rgba(35,35,45,.96)", backdropFilter: "blur(24px)", borderRadius: 12, boxShadow: "0 24px 64px rgba(0,0,0,.6)", zIndex: 200, border: "1px solid rgba(255,255,255,.12)", padding: 20 }} onClick={(e) => e.stopPropagation()}>
         <div style={{ display: "flex", alignItems: "center", background: "rgba(255,255,255,.08)", borderRadius: 8, padding: "8px 14px", marginBottom: 16 }}><FontAwesomeIcon icon={faSearch} style={{ marginRight: 8, color: "#aaa" }} /><input autoFocus placeholder="Type here to search" value={searchQ} onChange={(e) => setSearchQ(e.target.value)} style={{ flex: 1, background: "transparent", border: "none", outline: "none", color: "#fff", fontSize: 14 }} /></div>
-        {filteredIcons.length > 0 && (<div>{filteredIcons.map((icon) => (<div key={icon.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "8px 10px", borderRadius: 6, cursor: "pointer", color: "#fff" }} onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,.08)"} onMouseLeave={(e) => e.currentTarget.style.background = "transparent"} onClick={() => { openWindow(icon.type); setSearchOpen(false); setSearchQ(""); }}><FontAwesomeIcon icon={icon.icon} style={{ fontSize: 20 }} /><span style={{ fontSize: 14 }}>{icon.name}</span></div>))}</div>)}
+        {filteredIcons.length > 0 && (<div>{filteredIcons.map((icon) => (<div key={icon.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "8px 10px", borderRadius: 6, cursor: "pointer", color: "#fff" }} onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,.08)"} onMouseLeave={(e) => e.currentTarget.style.background = "transparent"} onClick={() => { openWindow(icon.type); setSearchOpen(false); setSearchQ(""); }}><FontAwesomeIcon icon={icon.icon} style={{ fontSize: 20, color: icon.style?.color || "#fff" }} /><span style={{ fontSize: 14 }}>{icon.name}</span></div>))}</div>)}
       </div>)}
 
       <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, height: 48, background: "rgba(20,20,30,.92)", backdropFilter: "blur(20px)", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 12px", zIndex: 100, borderTop: "1px solid rgba(255,255,255,.06)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <TaskBtn onClick={(e) => { e.stopPropagation(); setStartMenu((s) => !s); setSearchOpen(false); }} active={startMenu} title="Start"><FontAwesomeIcon icon={faWindows} /></TaskBtn>
+          <TaskBtn onClick={(e) => { e.stopPropagation(); setStartMenu((s) => !s); setSearchOpen(false); }} active={startMenu} title="Start"><FontAwesomeIcon icon={faWindows} style={{color: "#0cabd7"}} /></TaskBtn>
           <TaskBtn onClick={(e) => { e.stopPropagation(); setSearchOpen((s) => !s); setStartMenu(false); }} active={searchOpen} title="Search"><FontAwesomeIcon icon={faSearch} /></TaskBtn>
           <div style={{ width: 1, height: 24, background: "rgba(255,255,255,.1)", margin: "0 4px" }} />
-          <TaskBtn onClick={() => openWindow("filemanager")} title="File Manager"><FontAwesomeIcon icon={faFolderTree} /></TaskBtn>
-          <TaskBtn onClick={() => openWindow("cmd")} title="Terminal"><FontAwesomeIcon icon={faTerminal} /></TaskBtn>
-          <TaskBtn onClick={() => openWindow("camera")} title="Camera"><FontAwesomeIcon icon={faCamera} /></TaskBtn>
-          <TaskBtn onClick={() => openWindow("recycle")} title="Recycle Bin"><FontAwesomeIcon icon={faTrashAlt} /></TaskBtn>
+          <TaskBtn onClick={() => openWindow("filemanager")} title="File Manager"><FontAwesomeIcon icon={faFolderTree} style = {{color: "#d1bd0d"}} /></TaskBtn>
+          <TaskBtn onClick={() => openWindow("cmd")} title="Terminal"><FontAwesomeIcon icon={faTerminal} style = {{color: "#bababa"}} /></TaskBtn>
+          <TaskBtn onClick={() => openWindow("camera")} title="Camera"><FontAwesomeIcon icon={faCamera} style={{color: "#110366"}} /></TaskBtn>
+          <TaskBtn onClick={() => openWindow("recycle")} title="Recycle Bin"><FontAwesomeIcon icon={faTrashAlt} style={{color: "#4656bc"}} /></TaskBtn>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>{windows.map((w) => (<div key={w.id} onClick={() => focusWindow(w.id)} style={{ padding: "4px 12px", borderRadius: 4, cursor: "pointer", fontSize: 12, background: activeWin === w.id ? "rgba(255,255,255,.15)" : "rgba(255,255,255,.05)", color: activeWin === w.id ? "#fff" : "rgba(255,255,255,.6)", borderBottom: activeWin === w.id ? "2px solid #0078D4" : "2px solid transparent", maxWidth: 120, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{w.title.split("—")[0].trim()}</div>))}</div>
         <div style={{ display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,.85)", fontSize: 13 }}><FontAwesomeIcon icon={faVolumeUp} /><FontAwesomeIcon icon={faWifi} /><FontAwesomeIcon icon={faBatteryFull} /><div style={{ width: 1, height: 20, background: "rgba(255,255,255,.1)" }} /><div style={{ textAlign: "right", lineHeight: 1.4 }}><div style={{ fontSize: 13, fontWeight: 500 }}>{time.h}</div><div style={{ fontSize: 11, color: "rgba(255,255,255,.5)" }}>{time.d}</div></div></div>
