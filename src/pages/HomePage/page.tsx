@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { 
   faUserCircle, faFolderOpen, faChartLine, faFileAlt, faTerminal, 
   faFilePdf, faTrashAlt, faFolderTree, faCamera, faDesktop, faHdd, 
@@ -74,6 +74,14 @@ interface Photo {
   name: string;
   file: string;
   type: string;
+}
+
+declare global {
+  interface Window {
+    notifyFn: (msg: string) => void;
+    setSelectedProjectFn: (project: Project | null) => void;
+    setSelectedExperienceFn: (exp: Experience | null) => void;
+  }
 }
 
 const WALLPAPER = "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070&auto=format&fit=crop";
@@ -986,7 +994,7 @@ function WindowContent({ type, onNotify, setSelectedProject, setSelectedExperien
           [faChartBar, "Projects", userInfo.projects],
         ].map(([ico, label, val], idx) => (
           <div key={idx} style={{ background: "#f8f8f8", borderRadius: 8, padding: "10px 14px" }}>
-            <div style={{ fontSize: 11, color: "#888", marginBottom: 2 }}><FontAwesomeIcon icon={ico as IconDefinition} style={{ marginRight: 4 }} /> {label}</div>
+            <div style={{ fontSize: 11, color: "#888", marginBottom: 2 }}><FontAwesomeIcon icon={ico as IconDefinition} style={{ marginRight: 4 }} /> {label as string}</div>
             <div style={{ fontSize: 13, color: "#222", fontWeight: 500 }}>{val as string}</div>
           </div>
         ))}
@@ -1178,9 +1186,9 @@ export default function App() {
   const [selectedExperience, setSelectedExperience] = useState<Experience | null>(null);
   const dragRef = useRef<{ id: string; ox: number; oy: number } | null>(null);
 
-  (window as any).notifyFn = (msg: string) => { setNotification(msg); setTimeout(() => setNotification(null), 3000); };
-  (window as any).setSelectedProjectFn = (project: Project | null) => { setSelectedProject(project); };
-  (window as any).setSelectedExperienceFn = (exp: Experience | null) => { setSelectedExperience(exp); };
+  window.notifyFn = (msg: string) => { setNotification(msg); setTimeout(() => setNotification(null), 3000); };
+  window.setSelectedProjectFn = (project: Project | null) => { setSelectedProject(project); };
+  window.setSelectedExperienceFn = (exp: Experience | null) => { setSelectedExperience(exp); };
 
   useEffect(() => {
     const tick = () => { const n = new Date(); setTime({ h: n.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }), d: n.toLocaleDateString("en-US", { month: "short", day: "numeric" }) }); };
