@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { 
   faUserCircle, faFolderOpen, faChartLine, faFileAlt, faTerminal, 
   faFilePdf, faTrashAlt, faFolderTree, faCamera, faDesktop, faHdd, 
@@ -11,6 +12,69 @@ import {
   faLink, faCode, faExternalLinkAlt, faTimesCircle, faChevronLeft, faChevronRight
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub, faWindows } from "@fortawesome/free-brands-svg-icons";
+
+// Type definitions
+interface Project {
+  id: number;
+  title: string;
+  description: string;
+  techStack: string[];
+  demoUrl: string;
+  repoUrl: string;
+  images: string[];
+  status: string;
+  category: string;
+  icon: IconDefinition;
+}
+
+interface Experience {
+  id: number;
+  title: string;
+  company: string;
+  period: string;
+  description: string;
+  credentialUrl: string | null;
+  technologies: string[];
+  achievements: string[];
+  icon: IconDefinition;
+  color: string;
+}
+
+interface DesktopIcon {
+  id: string;
+  name: string;
+  icon: IconDefinition;
+  type: string;
+  style?: { color: string };
+}
+
+interface WindowType {
+  id: string;
+  type: string;
+  title: string;
+  w: number;
+  h: number;
+  z: number;
+}
+
+interface FileItem {
+  name: string;
+  type: string;
+  icon?: IconDefinition;
+  imagePath?: string;
+}
+
+interface SidebarItem {
+  name: string;
+  icon: IconDefinition;
+  path: string;
+}
+
+interface Photo {
+  name: string;
+  file: string;
+  type: string;
+}
 
 const WALLPAPER = "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070&auto=format&fit=crop";
 
@@ -28,7 +92,7 @@ const userInfo = {
   profileImage: "images/philip-john-bonbon.jpg"
 };
 
-const projectsData = [
+const projectsData: Project[] = [
   {
     id: 1,
     title: "Success Shared Solution",
@@ -182,7 +246,7 @@ const projectsData = [
   },
 ];
 
-const experiencesData = [
+const experiencesData: Experience[] = [
   {
     id: 1,
     title: "AI champion for nonprofits",
@@ -275,7 +339,7 @@ const skills = {
   Tools: ["Git", "Arduino", "Xamarin", "REST APIs"],
 };
 
-const desktopIcons = [
+const desktopIcons: DesktopIcon[] = [
   { id: "user", name: "This User", icon: faUserCircle, type: "user", style: {color: "#4656bc"} },
   { id: "projects", name: "Projects", icon: faFolderOpen, type: "projects", style: {color: "#d1bd0d"} },
   { id: "experience", name: "Experience", icon: faChartLine, type: "experience", style: {color: "#46bc5e"} },
@@ -288,7 +352,7 @@ const desktopIcons = [
 ];  
 
 // Image Viewer Modal for File Manager
-function ImageViewer({ imagePath, onClose }) {
+function ImageViewer({ imagePath, onClose }: { imagePath: string; onClose: () => void }) {
   return (
     <div style={{
       position: "fixed",
@@ -308,7 +372,7 @@ function ImageViewer({ imagePath, onClose }) {
         alt="Full size" 
         style={{ maxWidth: "90%", maxHeight: "90%", objectFit: "contain" }}
         onClick={(e) => e.stopPropagation()}
-        onError={(e) => { e.target.src = "https://via.placeholder.com/800x600?text=Image+Not+Found"; }}
+        onError={(e: React.SyntheticEvent<HTMLImageElement>) => { (e.target as HTMLImageElement).src = "https://via.placeholder.com/800x600?text=Image+Not+Found"; }}
       />
       <button onClick={onClose} style={{
         position: "absolute",
@@ -330,7 +394,7 @@ function ImageViewer({ imagePath, onClose }) {
 }
 
 // Project Detail Modal Component
-function ProjectDetail({ project, onClose }) {
+function ProjectDetail({ project, onClose }: { project: Project; onClose: () => void }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const nextImage = () => {
@@ -387,7 +451,7 @@ function ProjectDetail({ project, onClose }) {
               src={project.images[currentImageIndex]} 
               alt={project.title}
               style={{ width: "100%", height: "auto", maxHeight: "400px", objectFit: "contain" }}
-              onError={(e) => { e.target.src = "https://via.placeholder.com/800x400?text=Image+Not+Found"; }}
+              onError={(e: React.SyntheticEvent<HTMLImageElement>) => { (e.target as HTMLImageElement).src = "https://via.placeholder.com/800x400?text=Image+Not+Found"; }}
             />
             {project.images.length > 1 && (
               <>
@@ -452,7 +516,7 @@ function ProjectDetail({ project, onClose }) {
               <FontAwesomeIcon icon={faCode} /> Tech Stack
             </h3>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {project.techStack.map((tech) => (
+              {project.techStack.map((tech: string) => (
                 <span key={tech} style={{ background: "#f0f0f0", padding: "4px 12px", borderRadius: 6, fontSize: 12 }}>{tech}</span>
               ))}
             </div>
@@ -497,7 +561,7 @@ function ProjectDetail({ project, onClose }) {
 }
 
 // Experience Detail Modal
-function ExperienceDetail({ experience, onClose }) {
+function ExperienceDetail({ experience, onClose }: { experience: Experience; onClose: () => void }) {
   return (
     <div style={{
       position: "fixed",
@@ -569,7 +633,7 @@ function ExperienceDetail({ experience, onClose }) {
           <div style={{ marginBottom: 20 }}>
             <h3 style={{ fontSize: 16, marginBottom: 10 }}>Technologies</h3>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {experience.technologies.map((tech) => (
+              {experience.technologies.map((tech: string) => (
                 <span key={tech} style={{ background: "#f0f0f0", padding: "4px 12px", borderRadius: 6, fontSize: 12 }}>{tech}</span>
               ))}
             </div>
@@ -580,7 +644,7 @@ function ExperienceDetail({ experience, onClose }) {
           <div>
             <h3 style={{ fontSize: 16, marginBottom: 10 }}>Key Achievements</h3>
             <ul style={{ paddingLeft: 20 }}>
-              {experience.achievements.map((achievement, idx) => (
+              {experience.achievements.map((achievement: string, idx: number) => (
                 <li key={idx} style={{ marginBottom: 8, color: "#555" }}>{achievement}</li>
               ))}
             </ul>
@@ -591,19 +655,19 @@ function ExperienceDetail({ experience, onClose }) {
   );
 }
 
-function FileManagerWindow({ onNotify }) {
-  const [currentPath, setCurrentPath] = useState("This PC");
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [viewerImage, setViewerImage] = useState(null);
+function FileManagerWindow({ onNotify }: { onNotify: (msg: string) => void }) {
+  const [currentPath, setCurrentPath] = useState<string>("This PC");
+  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const [viewerImage, setViewerImage] = useState<string | null>(null);
 
-  const sidebarItems = [
+  const sidebarItems: SidebarItem[] = [
     { name: "This PC", icon: faDesktop, path: "This PC" },
     { name: "Local Disk (C:)", icon: faHdd, path: "C:" },
     { name: "Downloads", icon: faDownload, path: "Downloads" },
     { name: "Pictures", icon: faImage, path: "Pictures" },
   ];
 
-  const personalPhotos = [ 
+  const personalPhotos: Photo[] = [ 
     { name: "PJ Photo 1", file: "pj1.jpg", type: "image" },
     { name: "PJ Photo 2", file: "pj2.jpg", type: "image" },
     { name: "PJ Photo 3", file: "pj3.jpg", type: "image" },
@@ -621,8 +685,8 @@ function FileManagerWindow({ onNotify }) {
     { name: "PJ Photo 15", file: "pj15.jpg", type: "image" }
   ];
 
-  const getItemsForPath = () => {
-    const files = {
+  const getItemsForPath = (): FileItem[] => {
+    const files: { [key: string]: FileItem[] } = {
       "This PC": [
         { name: "Local Disk (C:)", type: "folder", icon: faHdd },
         { name: "Downloads", type: "folder", icon: faDownload },
@@ -652,7 +716,7 @@ function FileManagerWindow({ onNotify }) {
 
   const items = getItemsForPath();
 
-  const openItem = (item) => {
+  const openItem = (item: FileItem) => {
     if (item.type === "folder") {
       if (item.name === "Local Disk (C:)") setCurrentPath("C:");
       else if (item.name === "Downloads") setCurrentPath("Downloads");
@@ -685,8 +749,8 @@ function FileManagerWindow({ onNotify }) {
                 background: currentPath === item.path ? "#e0e0e0" : "transparent",
                 transition: "background 0.1s",
               }}
-              onMouseEnter={(e) => { if (currentPath !== item.path) e.currentTarget.style.background = "#e9e9e9"; }}
-              onMouseLeave={(e) => { if (currentPath !== item.path) e.currentTarget.style.background = "transparent"; }}
+              onMouseEnter={(e) => { if (currentPath !== item.path) (e.currentTarget as HTMLDivElement).style.background = "#e9e9e9"; }}
+              onMouseLeave={(e) => { if (currentPath !== item.path) (e.currentTarget as HTMLDivElement).style.background = "transparent"; }}
             >
               <FontAwesomeIcon icon={item.icon} style={{ width: 20, fontSize: 16, color: "#0078D4" }} />
               <span style={{ fontSize: 13, fontWeight: 500 }}>{item.name}</span>
@@ -720,7 +784,7 @@ function FileManagerWindow({ onNotify }) {
           </div>
         </div>
         <div style={{ padding: 20, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))", gap: 16, overflowY: "auto", flex: 1 }}>
-          {items.map((item, idx) => (
+          {items.map((item: FileItem, idx: number) => (
             <div
               key={idx}
               style={{
@@ -737,14 +801,19 @@ function FileManagerWindow({ onNotify }) {
                     src={item.imagePath} 
                     alt={item.name}
                     style={{ width: 80, height: 80, objectFit: "cover", borderRadius: 8, marginBottom: 8 }}
-                    onError={(e) => { e.target.style.display = "none"; e.target.nextSibling.style.display = "flex"; }}
+                    onError={(e: React.SyntheticEvent<HTMLImageElement>) => { 
+                      (e.target as HTMLImageElement).style.display = "none"; 
+                      if ((e.target as HTMLImageElement).nextSibling) {
+                        ((e.target as HTMLImageElement).nextSibling as HTMLElement).style.display = "flex";
+                      }
+                    }}
                   />
                   <div style={{ display: "none" }}>
                     <FontAwesomeIcon icon={faImage} style={{ fontSize: 36, color: "#7f8c8d", marginBottom: 8 }} />
                   </div>
                 </>
               ) : (
-                <FontAwesomeIcon icon={item.icon} style={{ fontSize: 36, color: item.type === "folder" ? "#F2C94C" : "#7f8c8d", marginBottom: 8 }} />
+                <FontAwesomeIcon icon={item.icon!} style={{ fontSize: 36, color: item.type === "folder" ? "#F2C94C" : "#7f8c8d", marginBottom: 8 }} />
               )}
               <span style={{ fontSize: 12, textAlign: "center", wordBreak: "break-word" }}>{item.name}</span>
             </div>
@@ -755,8 +824,8 @@ function FileManagerWindow({ onNotify }) {
   );
 }
 
-function CameraWindow({ onNotify }) {
-  const videoRef = useRef(null);
+function CameraWindow({ onNotify }: { onNotify: (msg: string) => void }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [hasCamera, setHasCamera] = useState(true);
   const [streamActive, setStreamActive] = useState(false);
 
@@ -777,7 +846,7 @@ function CameraWindow({ onNotify }) {
 
     return () => {
       if (videoRef.current && videoRef.current.srcObject) {
-        const tracks = videoRef.current.srcObject.getTracks();
+        const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
         tracks.forEach(track => track.stop());
       }
     };
@@ -789,16 +858,20 @@ function CameraWindow({ onNotify }) {
       canvas.width = videoRef.current.videoWidth;
       canvas.height = videoRef.current.videoHeight;
       const ctx = canvas.getContext('2d');
-      ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-      canvas.toBlob(blob => {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `snapshot-${Date.now()}.png`;
-        a.click();
-        URL.revokeObjectURL(url);
-        onNotify?.("Screenshot saved to Downloads!");
-      });
+      if (ctx) {
+        ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `snapshot-${Date.now()}.png`;
+            a.click();
+            URL.revokeObjectURL(url);
+            onNotify?.("Screenshot saved to Downloads!");
+          }
+        });
+      }
     }
   };
 
@@ -825,7 +898,7 @@ function CameraWindow({ onNotify }) {
 }
 
 function CmdWindow() {
-  const [lines, setLines] = useState([
+  const [lines, setLines] = useState<Array<{t: string; v: string}>>([
     { t: "sys", v: "Microsoft Windows [Version 11.0.22631.0]" },
     { t: "sys", v: "(c) Microsoft Corporation. All rights reserved." },
     { t: "sys", v: "" },
@@ -833,9 +906,9 @@ function CmdWindow() {
     { t: "sys", v: "" },
   ]);
   const [input, setInput] = useState("");
-  const bottomRef = useRef(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
-  const cmds = {
+  const cmds: { [key: string]: () => string[] } = {
     help: () => ["Available commands:", "  about     Show personal information", "  projects  List all projects", "  skills    Display technical skills", "  exp       Show work experience", "  contact   Display contact info", "  clear     Clear the terminal", "  whoami    Current user"],
     about: () => [`Name:      ${userInfo.name}`, `Role:      ${userInfo.role}`, `Location:  ${userInfo.location}`, `Education: ${userInfo.education}`, `Bio:       ${userInfo.bio}`],
     projects: () => projectsData.map((p) => `  [${p.status.padEnd(9)}]  ${p.title}  (${p.category})`),
@@ -845,7 +918,7 @@ function CmdWindow() {
     whoami: () => [`${userInfo.name} — ${userInfo.role}`],
   };
 
-  const run = (cmd) => {
+  const run = (cmd: string) => {
     const c = cmd.trim().toLowerCase();
     const newLines = [...lines, { t: "in", v: `C:\\Users\\Philip> ${cmd}` }];
     if (c === "") { setLines(newLines); setInput(""); return; }
@@ -876,7 +949,12 @@ function CmdWindow() {
   );
 }
 
-function WindowContent({ type, onNotify, setSelectedProject, setSelectedExperience }) {
+function WindowContent({ type, onNotify, setSelectedProject, setSelectedExperience }: { 
+  type: string; 
+  onNotify: (msg: string) => void; 
+  setSelectedProject: (project: Project | null) => void; 
+  setSelectedExperience: (exp: Experience | null) => void;
+}) {
   if (type === "user") return (
     <div style={{ padding: 24 }}>
       <div style={{ display: "flex", gap: 20, alignItems: "center", marginBottom: 20, paddingBottom: 20, borderBottom: "1px solid #e0e0e0" }}>
@@ -884,9 +962,11 @@ function WindowContent({ type, onNotify, setSelectedProject, setSelectedExperien
           src={userInfo.profileImage} 
           alt={userInfo.name}
           style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover" }}
-          onError={(e) => { 
-            e.target.style.display = "none";
-            e.target.nextSibling.style.display = "flex";
+          onError={(e: React.SyntheticEvent<HTMLImageElement>) => { 
+            (e.target as HTMLImageElement).style.display = "none";
+            if ((e.target as HTMLImageElement).nextSibling) {
+              ((e.target as HTMLImageElement).nextSibling as HTMLElement).style.display = "flex";
+            }
           }}
         />
         <div style={{ width: 80, height: 80, borderRadius: "50%", background: "linear-gradient(135deg,#0078D4,#8764B8)", display: "none", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 28, fontWeight: 700, flexShrink: 0 }}>PJ</div>
@@ -904,10 +984,10 @@ function WindowContent({ type, onNotify, setSelectedProject, setSelectedExperien
           [faGraduationCap, "Education", userInfo.education],
           [faStar, "Experience", userInfo.experience],
           [faChartBar, "Projects", userInfo.projects],
-        ].map(([ico, label, val]) => (
-          <div key={label} style={{ background: "#f8f8f8", borderRadius: 8, padding: "10px 14px" }}>
-            <div style={{ fontSize: 11, color: "#888", marginBottom: 2 }}><FontAwesomeIcon icon={ico} style={{ marginRight: 4 }} /> {label}</div>
-            <div style={{ fontSize: 13, color: "#222", fontWeight: 500 }}>{val}</div>
+        ].map(([ico, label, val], idx) => (
+          <div key={idx} style={{ background: "#f8f8f8", borderRadius: 8, padding: "10px 14px" }}>
+            <div style={{ fontSize: 11, color: "#888", marginBottom: 2 }}><FontAwesomeIcon icon={ico as IconDefinition} style={{ marginRight: 4 }} /> {label}</div>
+            <div style={{ fontSize: 13, color: "#222", fontWeight: 500 }}>{val as string}</div>
           </div>
         ))}
       </div>
@@ -930,11 +1010,10 @@ function WindowContent({ type, onNotify, setSelectedProject, setSelectedExperien
               padding: 14, 
               transition: "box-shadow .2s, transform .2s", 
               cursor: "pointer", 
-              background: "#fff",
-              hover: { transform: "translateY(-2px)" }
+              background: "#fff"
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,120,212,.15)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.transform = "translateY(0)"; }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 16px rgba(0,120,212,.15)"; (e.currentTarget as HTMLDivElement).style.transform = "translateY(-2px)"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.boxShadow = "none"; (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)"; }}
             onClick={() => setSelectedProject(project)}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
@@ -968,8 +1047,8 @@ function WindowContent({ type, onNotify, setSelectedProject, setSelectedExperien
           <div key={exp.id} style={{ position: "relative", marginBottom: 24, cursor: "pointer" }} onClick={() => setSelectedExperience(exp)}>
             <div style={{ position: "absolute", left: -24, top: 2, width: 16, height: 16, borderRadius: "50%", background: exp.color, border: "2px solid #fff", boxShadow: `0 0 0 2px ${exp.color}` }} />
             <div style={{ background: "#fafafa", border: "1px solid #e0e0e0", borderRadius: 10, padding: 14, transition: "box-shadow .2s" }}
-              onMouseEnter={(e) => e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)"}
-              onMouseLeave={(e) => e.currentTarget.style.boxShadow = "none"}>
+              onMouseEnter={(e) => (e.currentTarget as HTMLDivElement).style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)"}
+              onMouseLeave={(e) => (e.currentTarget as HTMLDivElement).style.boxShadow = "none"}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 8 }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 600, fontSize: 15, color: "#1a1a1a", marginBottom: 4 }}>
@@ -1009,8 +1088,15 @@ function WindowContent({ type, onNotify, setSelectedProject, setSelectedExperien
   return <div style={{ padding: 24, color: "#666" }}>Loading...</div>;
 }
 
-function WinFrame({ win, isActive, onClose, onFocus, position, onDragStart }) {
-  const iconMap = {
+function WinFrame({ win, isActive, onClose, onFocus, position, onDragStart }: { 
+  win: WindowType; 
+  isActive: boolean; 
+  onClose: () => void; 
+  onFocus: () => void; 
+  position: { x: number; y: number }; 
+  onDragStart: (e: React.MouseEvent, id: string) => void;
+}) {
+  const iconMap: { [key: string]: IconDefinition } = {
     user: faUserCircle, projects: faFolderOpen, experience: faChartLine,
     skills: faFileAlt, cmd: faTerminal, resume: faFilePdf,
     recycle: faTrashAlt, filemanager: faFolderTree, camera: faCamera
@@ -1042,8 +1128,8 @@ function WinFrame({ win, isActive, onClose, onFocus, position, onDragStart }) {
           {win.title}
         </div>
         <button onClick={onClose} style={{ width: 28, height: 28, border: "none", borderRadius: 4, cursor: "pointer", background: "transparent", fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center", color: win.type === "cmd" ? "#888" : "#666" }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = "#E81123"; e.currentTarget.style.color = "#fff"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = win.type === "cmd" ? "#888" : "#666"; }}>
+          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#E81123"; (e.currentTarget as HTMLButtonElement).style.color = "#fff"; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "transparent"; (e.currentTarget as HTMLButtonElement).style.color = win.type === "cmd" ? "#888" : "#666"; }}>
           <FontAwesomeIcon icon={faTimes} />
         </button>
       </div>
@@ -1054,7 +1140,12 @@ function WinFrame({ win, isActive, onClose, onFocus, position, onDragStart }) {
   );
 }
 
-function TaskBtn({ children, onClick, active, title }) {
+function TaskBtn({ children, onClick, active, title }: { 
+  children: React.ReactNode; 
+  onClick: (e: React.MouseEvent) => void; 
+  active: boolean; 
+  title: string;
+}) {
   const [hover, setHover] = useState(false);
   return (
     <button title={title} onClick={onClick} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}
@@ -1071,25 +1162,25 @@ function TaskBtn({ children, onClick, active, title }) {
 }
 
 export default function App() {
-  const [phase, setPhase] = useState("loading");
-  const [progress, setProgress] = useState(0);
-  const [time, setTime] = useState({ h: "", d: "" });
-  const [windows, setWindows] = useState([]);
-  const [zCounter, setZCounter] = useState(10);
-  const [positions, setPositions] = useState({});
-  const [activeWin, setActiveWin] = useState(null);
-  const [dragging, setDragging] = useState(null);
-  const [startMenu, setStartMenu] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQ, setSearchQ] = useState("");
-  const [notification, setNotification] = useState(null);
-  const [selectedProject, setSelectedProject] = useState(null);
-  const [selectedExperience, setSelectedExperience] = useState(null);
-  const dragRef = useRef(null);
+  const [phase, setPhase] = useState<string>("loading");
+  const [progress, setProgress] = useState<number>(0);
+  const [time, setTime] = useState<{ h: string; d: string }>({ h: "", d: "" });
+  const [windows, setWindows] = useState<WindowType[]>([]);
+  const [zCounter, setZCounter] = useState<number>(10);
+  const [positions, setPositions] = useState<{ [key: string]: { x: number; y: number } }>({});
+  const [activeWin, setActiveWin] = useState<string | null>(null);
+  const [dragging, setDragging] = useState<string | null>(null);
+  const [startMenu, setStartMenu] = useState<boolean>(false);
+  const [searchOpen, setSearchOpen] = useState<boolean>(false);
+  const [searchQ, setSearchQ] = useState<string>("");
+  const [notification, setNotification] = useState<string | null>(null);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [selectedExperience, setSelectedExperience] = useState<Experience | null>(null);
+  const dragRef = useRef<{ id: string; ox: number; oy: number } | null>(null);
 
-  window.notifyFn = (msg) => { setNotification(msg); setTimeout(() => setNotification(null), 3000); };
-  window.setSelectedProjectFn = (project) => { setSelectedProject(project); };
-  window.setSelectedExperienceFn = (exp) => { setSelectedExperience(exp); };
+  (window as any).notifyFn = (msg: string) => { setNotification(msg); setTimeout(() => setNotification(null), 3000); };
+  (window as any).setSelectedProjectFn = (project: Project | null) => { setSelectedProject(project); };
+  (window as any).setSelectedExperienceFn = (exp: Experience | null) => { setSelectedExperience(exp); };
 
   useEffect(() => {
     const tick = () => { const n = new Date(); setTime({ h: n.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }), d: n.toLocaleDateString("en-US", { month: "short", day: "numeric" }) }); };
@@ -1103,13 +1194,13 @@ export default function App() {
     return () => clearInterval(id);
   }, []);
 
-  const notify = (msg) => { setNotification(msg); setTimeout(() => setNotification(null), 3000); };
+  const notify = (msg: string) => { setNotification(msg); setTimeout(() => setNotification(null), 3000); };
 
-  const openWindow = (type) => {
+  const openWindow = (type: string) => {
     if (type === "resume") { window.open("https://drive.google.com/uc?export=download&id=1GGmuO82F1WVow5ESMlMpon_TGCL5GyqD", "_blank"); notify("Opening Resume.pdf…"); return; }
-    const titles = { user: "This User — Philip John Bonbon", projects: "Projects Portfolio", experience: "Work Experience", skills: "Skills.txt", cmd: "Command Prompt", recycle: "Recycle Bin", filemanager: "File Manager", camera: "Camera" };
-    const sizes = { user: [680, 540], projects: [780, 600], experience: [700, 560], skills: [540, 420], cmd: [680, 480], recycle: [500, 400], filemanager: [950, 580], camera: [640, 520] };
-    const existing = windows.find((w) => w.type === type);
+    const titles: { [key: string]: string } = { user: "This User — Philip John Bonbon", projects: "Projects Portfolio", experience: "Work Experience", skills: "Skills.txt", cmd: "Command Prompt", recycle: "Recycle Bin", filemanager: "File Manager", camera: "Camera" };
+    const sizes: { [key: string]: number[] } = { user: [680, 540], projects: [780, 600], experience: [700, 560], skills: [540, 420], cmd: [680, 480], recycle: [500, 400], filemanager: [950, 580], camera: [640, 520] };
+    const existing = windows.find((w: WindowType) => w.type === type);
     if (existing) { const z = zCounter + 1; setZCounter(z); setWindows((ws) => ws.map((w) => w.type === type ? { ...w, z } : w)); setActiveWin(existing.id); return; }
     const z = zCounter + 1; setZCounter(z); const [w, h] = sizes[type] || [700, 520]; const offset = windows.length * 30;
     const newId = `${type}_${Date.now()}`;
@@ -1118,10 +1209,10 @@ export default function App() {
     setActiveWin(newId); setStartMenu(false); setSearchOpen(false);
   };
 
-  const closeWindow = (id) => { setWindows((ws) => ws.filter((w) => w.id !== id)); if (activeWin === id) setActiveWin(null); };
-  const focusWindow = (id) => { const z = zCounter + 1; setZCounter(z); setWindows((ws) => ws.map((w) => w.id === id ? { ...w, z } : w)); setActiveWin(id); };
-  const startDrag = useCallback((e, id) => { e.preventDefault(); const pos = positions[id] || { x: 100, y: 50 }; dragRef.current = { id, ox: e.clientX - pos.x, oy: e.clientY - pos.y }; setDragging(id); focusWindow(id); }, [positions]);
-  useEffect(() => { if (!dragging) return; const move = (e) => { const { id, ox, oy } = dragRef.current; setPositions((ps) => ({ ...ps, [id]: { x: Math.max(0, e.clientX - ox), y: Math.max(0, e.clientY - oy) } })); }; const up = () => setDragging(null); window.addEventListener("mousemove", move); window.addEventListener("mouseup", up); return () => { window.removeEventListener("mousemove", move); window.removeEventListener("mouseup", up); }; }, [dragging]);
+  const closeWindow = (id: string) => { setWindows((ws) => ws.filter((w) => w.id !== id)); if (activeWin === id) setActiveWin(null); };
+  const focusWindow = (id: string) => { const z = zCounter + 1; setZCounter(z); setWindows((ws) => ws.map((w) => w.id === id ? { ...w, z } : w)); setActiveWin(id); };
+  const startDrag = useCallback((e: React.MouseEvent, id: string) => { e.preventDefault(); const pos = positions[id] || { x: 100, y: 50 }; dragRef.current = { id, ox: e.clientX - pos.x, oy: e.clientY - pos.y }; setDragging(id); focusWindow(id); }, [positions]);
+  useEffect(() => { if (!dragging) return; const move = (e: MouseEvent) => { if (dragRef.current) { const { id, ox, oy } = dragRef.current; setPositions((ps) => ({ ...ps, [id]: { x: Math.max(0, e.clientX - ox), y: Math.max(0, e.clientY - oy) } })); } }; const up = () => setDragging(null); window.addEventListener("mousemove", move); window.addEventListener("mouseup", up); return () => { window.removeEventListener("mousemove", move); window.removeEventListener("mouseup", up); }; }, [dragging]);
 
   if (phase === "loading") return (
     <div style={{ width: "100vw", height: "100vh", background: "#000", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "'Segoe UI', sans-serif" }}>
@@ -1166,13 +1257,13 @@ export default function App() {
 
       {startMenu && (<div style={{ position: "fixed", bottom: 52, left: 12, width: 480, background: "rgba(35,35,45,.96)", backdropFilter: "blur(24px)", borderRadius: 12, boxShadow: "0 24px 64px rgba(0,0,0,.6)", zIndex: 200, border: "1px solid rgba(255,255,255,.12)", overflow: "hidden" }} onClick={(e) => e.stopPropagation()}>
         <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid rgba(255,255,255,.08)" }}><div style={{ display: "flex", alignItems: "center", gap: 14 }}><FontAwesomeIcon icon={faUserCircle} style={{ fontSize: 44, color: "#0078D4" }} /><div><div style={{ color: "#fff", fontWeight: 600, fontSize: 14 }}>{userInfo.name}</div><div style={{ color: "rgba(255,255,255,.5)", fontSize: 12 }}>{userInfo.role}</div></div></div></div>
-        <div style={{ padding: "16px 24px" }}><div style={{ color: "rgba(255,255,255,.5)", fontSize: 12, marginBottom: 10 }}>PINNED</div><div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8 }}>{desktopIcons.map((icon) => (<div key={icon.id} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, padding: "10px 8px", borderRadius: 8, cursor: "pointer", transition: "background .15s" }} onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,.1)"} onMouseLeave={(e) => e.currentTarget.style.background = "transparent"} onClick={() => openWindow(icon.type)}><FontAwesomeIcon icon={icon.icon} style={{ fontSize: 24, color: icon.style?.color || "#fff" }} /><span style={{ color: "rgba(255,255,255,.85)", fontSize: 11, textAlign: "center" }}>{icon.name}</span></div>))}</div></div>
+        <div style={{ padding: "16px 24px" }}><div style={{ color: "rgba(255,255,255,.5)", fontSize: 12, marginBottom: 10 }}>PINNED</div><div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8 }}>{desktopIcons.map((icon) => (<div key={icon.id} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, padding: "10px 8px", borderRadius: 8, cursor: "pointer", transition: "background .15s" }} onMouseEnter={(e) => (e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,.1)"} onMouseLeave={(e) => (e.currentTarget as HTMLDivElement).style.background = "transparent"} onClick={() => openWindow(icon.type)}><FontAwesomeIcon icon={icon.icon} style={{ fontSize: 24, color: icon.style?.color || "#fff" }} /><span style={{ color: "rgba(255,255,255,.85)", fontSize: 11, textAlign: "center" }}>{icon.name}</span></div>))}</div></div>
         <div style={{ padding: "12px 24px 16px", borderTop: "1px solid rgba(255,255,255,.08)", display: "flex", justifyContent: "flex-end" }}><button style={{ background: "rgba(255,255,255,.08)", border: "none", color: "rgba(255,255,255,.7)", padding: "6px 14px", borderRadius: 6, cursor: "pointer", fontSize: 12, display: "flex", alignItems: "center", gap: 6 }} onClick={() => setPhase("lock")}><FontAwesomeIcon icon={faLock} /> Lock</button></div>
       </div>)}
 
       {searchOpen && (<div style={{ position: "fixed", bottom: 52, left: "50%", transform: "translateX(-50%)", width: 480, background: "rgba(35,35,45,.96)", backdropFilter: "blur(24px)", borderRadius: 12, boxShadow: "0 24px 64px rgba(0,0,0,.6)", zIndex: 200, border: "1px solid rgba(255,255,255,.12)", padding: 20 }} onClick={(e) => e.stopPropagation()}>
         <div style={{ display: "flex", alignItems: "center", background: "rgba(255,255,255,.08)", borderRadius: 8, padding: "8px 14px", marginBottom: 16 }}><FontAwesomeIcon icon={faSearch} style={{ marginRight: 8, color: "#aaa" }} /><input autoFocus placeholder="Type here to search" value={searchQ} onChange={(e) => setSearchQ(e.target.value)} style={{ flex: 1, background: "transparent", border: "none", outline: "none", color: "#fff", fontSize: 14 }} /></div>
-        {filteredIcons.length > 0 && (<div>{filteredIcons.map((icon) => (<div key={icon.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "8px 10px", borderRadius: 6, cursor: "pointer", color: "#fff" }} onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,.08)"} onMouseLeave={(e) => e.currentTarget.style.background = "transparent"} onClick={() => { openWindow(icon.type); setSearchOpen(false); setSearchQ(""); }}><FontAwesomeIcon icon={icon.icon} style={{ fontSize: 20, color: icon.style?.color || "#fff" }} /><span style={{ fontSize: 14 }}>{icon.name}</span></div>))}</div>)}
+        {filteredIcons.length > 0 && (<div>{filteredIcons.map((icon) => (<div key={icon.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "8px 10px", borderRadius: 6, cursor: "pointer", color: "#fff" }} onMouseEnter={(e) => (e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,.08)"} onMouseLeave={(e) => (e.currentTarget as HTMLDivElement).style.background = "transparent"} onClick={() => { openWindow(icon.type); setSearchOpen(false); setSearchQ(""); }}><FontAwesomeIcon icon={icon.icon} style={{ fontSize: 20, color: icon.style?.color || "#fff" }} /><span style={{ fontSize: 14 }}>{icon.name}</span></div>))}</div>)}
       </div>)}
 
       <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, height: 48, background: "rgba(20,20,30,.92)", backdropFilter: "blur(20px)", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 12px", zIndex: 100, borderTop: "1px solid rgba(255,255,255,.06)" }}>
@@ -1180,10 +1271,10 @@ export default function App() {
           <TaskBtn onClick={(e) => { e.stopPropagation(); setStartMenu((s) => !s); setSearchOpen(false); }} active={startMenu} title="Start"><FontAwesomeIcon icon={faWindows} style={{color: "#0cabd7"}} /></TaskBtn>
           <TaskBtn onClick={(e) => { e.stopPropagation(); setSearchOpen((s) => !s); setStartMenu(false); }} active={searchOpen} title="Search"><FontAwesomeIcon icon={faSearch} /></TaskBtn>
           <div style={{ width: 1, height: 24, background: "rgba(255,255,255,.1)", margin: "0 4px" }} />
-          <TaskBtn onClick={() => openWindow("filemanager")} title="File Manager"><FontAwesomeIcon icon={faFolderTree} style = {{color: "#d1bd0d"}} /></TaskBtn>
-          <TaskBtn onClick={() => openWindow("cmd")} title="Terminal"><FontAwesomeIcon icon={faTerminal} style = {{color: "#bababa"}} /></TaskBtn>
-          <TaskBtn onClick={() => openWindow("camera")} title="Camera"><FontAwesomeIcon icon={faCamera} style={{color: "#110366"}} /></TaskBtn>
-          <TaskBtn onClick={() => openWindow("recycle")} title="Recycle Bin"><FontAwesomeIcon icon={faTrashAlt} style={{color: "#4656bc"}} /></TaskBtn>
+          <TaskBtn onClick={() => openWindow("filemanager")} title="File Manager" active={false}><FontAwesomeIcon icon={faFolderTree} style = {{color: "#d1bd0d"}} /></TaskBtn>
+          <TaskBtn onClick={() => openWindow("cmd")} title="Terminal" active={false}><FontAwesomeIcon icon={faTerminal} style = {{color: "#bababa"}} /></TaskBtn>
+          <TaskBtn onClick={() => openWindow("camera")} title="Camera" active={false}><FontAwesomeIcon icon={faCamera} style={{color: "#110366"}} /></TaskBtn>
+          <TaskBtn onClick={() => openWindow("recycle")} title="Recycle Bin" active={false}><FontAwesomeIcon icon={faTrashAlt} style={{color: "#4656bc"}} /></TaskBtn>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>{windows.map((w) => (<div key={w.id} onClick={() => focusWindow(w.id)} style={{ padding: "4px 12px", borderRadius: 4, cursor: "pointer", fontSize: 12, background: activeWin === w.id ? "rgba(255,255,255,.15)" : "rgba(255,255,255,.05)", color: activeWin === w.id ? "#fff" : "rgba(255,255,255,.6)", borderBottom: activeWin === w.id ? "2px solid #0078D4" : "2px solid transparent", maxWidth: 120, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{w.title.split("—")[0].trim()}</div>))}</div>
         <div style={{ display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,.85)", fontSize: 13 }}><FontAwesomeIcon icon={faVolumeUp} /><FontAwesomeIcon icon={faWifi} /><FontAwesomeIcon icon={faBatteryFull} /><div style={{ width: 1, height: 20, background: "rgba(255,255,255,.1)" }} /><div style={{ textAlign: "right", lineHeight: 1.4 }}><div style={{ fontSize: 13, fontWeight: 500 }}>{time.h}</div><div style={{ fontSize: 11, color: "rgba(255,255,255,.5)" }}>{time.d}</div></div></div>
